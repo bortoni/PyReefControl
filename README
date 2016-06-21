@@ -1,1 +1,27 @@
-Test file for git. #1
+PyReefControl is a project that aims to automate the most common aquarium monitoring and maintenance tasks.
+
+Platform HW:
+* Raspberry pi 3
+* Webpowerswitch (webpowerswitch.com)
+
+Supported Sensors:
+* Temperature: DSB18B20 
+* PH:
+
+Control:
+* Lights
+	* Display Tank: 2 Banks, Up to 3 Channels each
+	* Refugium
+	
+* Sump Pumps
+
+* Heaters
+	* Main
+	* Backup
+	
+* Powerheads
+	* 2 addressable individually
+	
+Notifications:
+	* iOS / Android Push notifications
+	* email	
