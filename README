@@ -1,8 +1,8 @@
 PyReefControl is a project that aims to automate the most common aquarium monitoring and maintenance tasks.
 
 Platform HW:
-* Raspberry pi 3
-* Webpowerswitch (webpowerswitch.com)
+* Raspberry pi 3 (Running Raspian Jessie)
+* Webpowerswitch (webpowerswitch.com) (WpS)
 
 Supported Sensors:
 * Temperature: DSB18B20 
@@ -25,3 +25,15 @@ Control:
 Notifications:
 	* iOS / Android Push notifications
 	* email	
+	
+Configuring ethernet:
+
+Goals: 
+	1. Remotely access the Pi via wifi 
+	2. ethernet should only be used for the Pi to communicate with the WpS.
+
+1) Assign a static address to eth0. Note that the address must be in a different IP range than your WLAN
+Add to the bottom of /etc/dhcpcd.conf
+
+interface eth0
+static ip_address=10.10.10.11/24
