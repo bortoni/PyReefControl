@@ -1,0 +1,36 @@
+{
+"schedule":[
+		{
+"event":[
+		{
+		"start":"00:00:01",
+		"end":"07:00:00",
+		"power_control":[
+				{"name":"LEDS_BLUE","state":"ON"},
+				{"name":"LEDS_WHITE","state":"ON"},
+				{"name":"PWR_HD1","state":"ON"},
+				{"name":"PWR_HD2","state":"ON"},
+				{"name":"SUMP_PUMPS","state":"ON"},
+				{"name":"FUGE_LIGHT","state":"ON"}
+		                ]
+		}
+       ]
+       },
+		{
+"event":[
+		{
+		"start":"08:00:12",
+		"end":"16:00:00",
+		"power_control":[
+				{"name":"LEDS_BLUE","state":"ON"},
+				{"name":"LEDS_WHITE","state":"ON"},
+				{"name":"PWR_HD1","state":"ON"},
+				{"name":"PWR_HD2","state":"ON"},
+				{"name":"SUMP_PUMPS","state":"ON"},
+				{"name":"FUGE_LIGHT","state":"ON"}
+		                ]
+		}
+       ]
+       }
+       ]
+}
