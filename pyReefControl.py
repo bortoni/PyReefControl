@@ -73,7 +73,10 @@ def implement_event(event, overrides):
 def sensor_main():
     name = multiprocessing.current_process().name
     print(name, 'Starting')
-    time.sleep(2)
+    defaults["SENSOR_INTERVAL"]
+    while True:
+    	print(name, 'sleeping', 60*int(defaults["SENSOR_INTERVAL"]))
+    	time.sleep(60*int(defaults["SENSOR_INTERVAL"]))
     print(name, 'Exiting')
 
 if __name__ == "__main__":
@@ -103,9 +106,12 @@ if __name__ == "__main__":
 
 	# TODO wait for time!
 
-	active_event = find_active_event(schedule["schedule"])
-	if active_event != None:
-		print("Index of active event:", active_event)
-		implement_event(schedule["schedule"][active_event], overrides);
-	else:
-		print("NO ACTIVE EVENT!!")
+	while True:
+		active_event = find_active_event(schedule["schedule"])
+		if active_event != None:
+			print("Index of active event:", active_event)
+			implement_event(schedule["schedule"][active_event], overrides);
+		else:
+			print("NO ACTIVE EVENT!!")
+		print("Main thread", 'sleeping', 60*int(defaults["EVENT_CHECK_INTERVAL"])+7)
+		time.sleep(60*int(defaults["EVENT_CHECK_INTERVAL"]))
