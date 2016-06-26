@@ -1,0 +1,51 @@
+{
+"overrides":
+	[
+		{
+"event":[
+		{
+		"name":"feed",
+		"duration":"12",
+		"active":"NO",
+		"power_control":[
+				{"name":"PWR_HD1","state":"OFF"},
+				{"name":"PWR_HD2","state":"OFF"},
+				{"name":"SUMP_PUMPS","state":"OFF"}
+		                ]
+		}
+       ]
+       },
+		{
+"event":[
+		{
+		"name":"temp_high",
+		"duration":"0",
+		"active":"NO",
+		"power_control":[
+				{"name":"LEDS_BLUE","state":"OFF"},
+				{"name":"LEDS_WHITE","state":"OFF"},
+				{"name":"PWR_HD1","state":"OFF"},
+				{"name":"FUGE_LIGHT","state":"OFF"}
+		                ]
+		}
+       ]
+       },
+		{
+"event":[
+		{
+		"name":"temp_low",
+		"duration":"0",
+		"active":"NO",
+		"power_control":[
+				{"name":"LEDS_BLUE","state":"ON"},
+				{"name":"LEDS_WHITE","state":"ON"},
+				{"name":"PWR_HD1","state":"ON"},
+				{"name":"PWR_HD2","state":"ON"},
+				{"name":"FUGE_LIGHT","state":"ON"},
+				{"name":"SUMP_PUMPS","state":"ON"}
+		                ]
+		}
+       ]
+       }
+    ]
+}
