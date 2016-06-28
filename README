@@ -1,35 +1,38 @@
 PyReefControl is a project that aims to automate the most common aquarium monitoring and maintenance tasks.
 
-Platform HW:
+Platform HW / SW:
 * Raspberry pi 3 (Running Raspian Jessie)
 * Webpowerswitch (webpowerswitch.com) (WpS)
+* Flask (http://flask.pocoo.org/)
 
 Supported Sensors:
-* Temperature: DSB18B20 
+* Temperature: DSB18B20
 * PH:
 
 Control:
 * Lights
-	* Display Tank: 2 Banks, Up to 3 Channels each
+	* Display Tank: 2 Channels: Blue, white
 	* Refugium
-	
+
 * Sump Pumps
 
 * Heaters
 	* Main
 	* Backup
-	
+
 * Powerheads
 	* 2 addressable individually
-	
+
 Notifications:
 	* iOS / Android Push notifications
-	* email	
-	
+	* email
+
+Environment Setup:
+
 Configuring ethernet:
 
-Goals: 
-	1. Remotely access the Pi via wifi 
+Goals:
+	1. Remotely access the Pi via wifi
 	2. ethernet should only be used for the Pi to communicate with the WpS.
 
 1) Assign a static address to eth0. Note that the address must be in a different IP range than your WLAN
@@ -37,3 +40,12 @@ Add to the bottom of /etc/dhcpcd.conf
 
 interface eth0
 static ip_address=10.10.10.11/24
+
+Install Python3
+
+Install pip
+
+Install flask
+
+
+------

@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<link rel=stylesheet type=text/css href="{{ url_for('static', filename='main.css') }}">
+<head>
+    <title>{{ title }}</title>
+</head>
+
+<body>
+      <h1>pyReefController!</h1>
+      <h2>The date and time on the server is: {{ time }}</h2>
+      <h2>Current Temperature is: {{ temp }}℉</h2>
+      <a href="http://localhost/feed" class="button">{{ feed }}</a>
+      </body>
+</html>

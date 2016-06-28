@@ -3,8 +3,55 @@ import os
 import time
 from datetime import datetime
 from pprint import pprint
+from flask import Flask, render_template
 import multiprocessing
 
+
+
+########### GLOBALS #########
+defaults = {}
+powermap = {}
+schedule = {}
+overrides_list = {}
+temperature = 78.0
+
+############## WEB APP
+app = Flask('PyReefControl')
+
+
+@app.route("/")
+def main_page():
+	feed_text = "Stop Feeding"
+	now = datetime.now()
+	timeString = now.strftime("%Y-%m-%d %H:%M")
+	feeding = get_current_feed_state();
+	if feeding == "NO":
+		feed_text = "Feed"
+	templateData = {
+      'title' : 'pyReefControl',
+      'time': timeString,
+      'temp': temperature,
+      'feed': feed_text
+      }
+	return render_template('main.html', **templateData)
+
+@app.route("/feed")
+def feed_request():
+	feeding = get_current_feed_state();
+	if feeding == "NO":
+		set_feed_override("YES")
+	else:
+		set_feed_override("NO")
+	return main_page()
+
+def webapp_main():
+	name = multiprocessing.current_process().name
+	print(name, 'Starting')
+	app.run(host='0.0.0.0', port=80, debug=True, use_reloader=False)
+	print(name, 'Exiting')
+
+
+########################### EVENT & POWER
 
 def control_power(name, state):
 	print("Controlling power for", name, "setting to", state)
@@ -44,6 +91,26 @@ def find_active_override(overrides):
 			return i
 	return retval
 
+def set_feed_override(state):
+	# currently supporting only the first active override
+	for i in range(len(overrides_list["overrides"])):
+		active = overrides_list["overrides"][i]["event"][0]["active"]
+		name = overrides_list["overrides"][i]["event"][0]["name"]
+		if name == "feed":
+			overrides_list["overrides"][i]["event"][0]["active"] = state
+			print("Set feed override to:", state)
+	return
+
+def get_current_feed_state():
+	# currently supporting only the first active override
+	for i in range(len(overrides_list["overrides"])):
+		active = overrides_list["overrides"][i]["event"][0]["active"]
+		name = overrides_list["overrides"][i]["event"][0]["name"]
+		if name == "feed":
+			print("Current Feed State is:", active)
+			return active
+	return "NO"
+
 
 def implement_event(event, overrides):
 	event_copy = event
@@ -65,11 +132,13 @@ def implement_event(event, overrides):
 
 	pprint(event_copy)
 
-	for i in range(event_count):
-		control_power(event_copy["event"][0]["power_control"][i]["name"], event_copy["event"][0]["power_control"][i]["state"])
+	print("range is:", range(event_count))
+	for k in range(event_count):
+		control_power(event_copy["event"][0]["power_control"][k]["name"], event_copy["event"][0]["power_control"][k]["state"])
 		time.sleep(2)
 	return
 
+################## SENSORS ######################
 def sensor_main():
     name = multiprocessing.current_process().name
     print(name, 'Starting')
@@ -79,30 +148,37 @@ def sensor_main():
     	time.sleep(60*int(defaults["SENSOR_INTERVAL"]))
     print(name, 'Exiting')
 
+
+
+
+################ MAIN ###################
+
 if __name__ == "__main__":
 	# read defaults config
-	defaults = {}
+
 	with open("./cfg/defaults.cfg") as f:
 		for line in f:
 			(key, val) = line.split()
 			defaults[key] = val
 
 	# initialize the powermap
-	powermap = {}
 	with open("./cfg/powermap.cfg") as f:
 		for line in f:
 			(key, val) = line.split()
 			powermap[key] = val
-
-	sensor_thread = multiprocessing.Process(name='sensor_main', target=sensor_main)
-	sensor_thread.start()
 
 	# read the daily schedule
 	with open('./cfg/daily_schedule.json') as data_file:
 		schedule = json.load(data_file)
 
 	with open('./cfg/overrides.json') as data_file:
-		overrides = json.load(data_file)
+		overrides_list = json.load(data_file)
+
+	sensor_thread = multiprocessing.Process(name='sensor_main', target=sensor_main)
+	webapp_thread = multiprocessing.Process(name='webapp_main', target=webapp_main)
+	sensor_thread.start()
+	webapp_thread.start()
+
 
 	# TODO wait for time!
 
@@ -110,7 +186,7 @@ if __name__ == "__main__":
 		active_event = find_active_event(schedule["schedule"])
 		if active_event != None:
 			print("Index of active event:", active_event)
-			implement_event(schedule["schedule"][active_event], overrides);
+			implement_event(schedule["schedule"][active_event], overrides_list);
 		else:
 			print("NO ACTIVE EVENT!!")
 		print("Main thread", 'sleeping', 60*int(defaults["EVENT_CHECK_INTERVAL"])+7)
