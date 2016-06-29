@@ -17,17 +17,21 @@ html {
 }
 
 
+
+
 .button {
 
 	/*Step 2: Basic Button Styles*/
 	display: block;
+	margin:0 auto;
 	height: 100px;
 	width: 500px;
 	background: #34696f;
 	border: 3px solid rgba(33, 68, 72, 0.59);
+	horizontal-align: middle;
 
 	/*Step 3: Text Styles*/
-	color: rgba(0, 0, 0, 0.55);
+	color: rgba(255, 255, 255, 0.95);
 	text-align: center;
 	font: bold 2.2em/100px "Helvetica Neue", Arial, Helvetica, Geneva, sans-serif;
 
