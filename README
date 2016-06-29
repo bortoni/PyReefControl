@@ -47,5 +47,7 @@ Install pip
 
 Install flask
 
+sudo pip3 install flask
+
 
 ------
