@@ -57,8 +57,10 @@ def control_power(name, state):
 	password = defaults["SWITCH_PASS"]
 	ip = defaults["SWITCH_IP"]
 	cmd = "curl http://" + user +':'+ password + '@' + ip + "/outlet?" + powermap[name]+'='+state
-#	print(cmd)
-#	os.system(cmd)
+
+	# only send this if running on the pi itself
+	if(print(os.path.exists("/home/pi"))):
+		os.system(cmd)
 #	curl http://admin:admin01@10.10.10.10/outlet?1=OFF
 	return
 
