@@ -36,12 +36,14 @@ def main_page():
 def feed_request():
 	if feeding.value == 0:
 		feeding.value = 1
+		e.set()
 	else:
 		feeding.value = 0
+		e.set()
 	return redirect(url_for('main_page'))
 
 def webapp_main(feeding, temperature):
-	name = multiprocessing.current_process().name
+	name = threading.currentThread().getName()
 	print(name, 'Starting')
 	app.run(host='0.0.0.0', port=80, debug=True, use_reloader=False)
 	print(name, 'Exiting')
@@ -151,12 +153,13 @@ def implement_event(event):
 
 def feed_timer():
 	print("FEED TIMER EXPIRED")
+	e.set()
 	return
 
 ################## SENSORS ######################
 def sensor_main():
 	global defaults
-	name = multiprocessing.current_process().name
+	name = threading.currentThread().getName()
 	print(name, 'Starting')
 	defaults["SENSOR_INTERVAL"]
 	while True:
@@ -168,6 +171,7 @@ def sensor_main():
 
 ################ MAIN ###################
 if __name__ == "__main__":
+	e = threading.Event()
 	feeding = Value('i', 0) # 0 not feeding 1 feeding
 	feed_timer_started = False
 	temperature = Value('d', 78.0)
@@ -196,8 +200,8 @@ if __name__ == "__main__":
 	with open('./cfg/overrides.json') as data_file:
 		overrides_list = json.load(data_file)
 
-	sensor_thread = multiprocessing.Process(name='sensor_main', target=sensor_main)
-	webapp_thread = multiprocessing.Process(name='webapp_main', target=webapp_main, args=(feeding, temperature))
+	sensor_thread = threading.Thread(name='sensor_main', target=sensor_main)
+	webapp_thread = threading.Thread(name='webapp_main', target=webapp_main, args=(feeding, temperature))
 	t = threading.Timer(60*int(defaults["FEED_DURATION"]), feed_timer)
 	sensor_thread.start()
 	webapp_thread.start()
@@ -219,11 +223,13 @@ if __name__ == "__main__":
 		else:
 			print("NO ACTIVE EVENT!!")
 		print("Main thread", 'sleeping', 60*int(defaults["EVENT_CHECK_INTERVAL"]))
-		time.sleep(60*int(defaults["EVENT_CHECK_INTERVAL"]))
+		e.wait(timeout=2+60*int(defaults["EVENT_CHECK_INTERVAL"]))
+		e.clear()
 
 		#if the timer is off and we were feeding, turn off feeding
-		if t.is_alive() == False and feed_timer_started == True:
+		if (feeding.value ==0 and feed_timer_started == True) or (t.is_alive() == False and feed_timer_started == True):
 			print("TURNING OFF feeding in MAIN")
 			feeding.value = 0
 			set_feed_override("NO")
+			t = threading.Timer(60*int(defaults["FEED_DURATION"]), feed_timer)
 			feed_timer_started = False
