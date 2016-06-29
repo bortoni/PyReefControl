@@ -41,9 +41,6 @@ Add to the bottom of /etc/dhcpcd.conf
 interface eth0
 static ip_address=10.10.10.11/24
 
-Install Python3
-
-Install pip
 
 Install flask
 
