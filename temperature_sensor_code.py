@@ -1,6 +1,8 @@
 import os
 import glob
 import time
+import math
+from hcsr04sensor import sensor
  
 os.system('modprobe w1-gpio')
 os.system('modprobe w1-therm')
@@ -25,8 +27,13 @@ def read_temp():
         temp_string = lines[1][equals_pos+2:]
         temp_c = float(temp_string) / 1000.0
         temp_f = temp_c * 9.0 / 5.0 + 32.0
-        return temp_c, temp_f
+        return temp_f
 	
 while True:
-	print(read_temp())	
-	time.sleep(1)
+    round_to=1
+    tempf = read_temp()
+    print("Temp is ", tempf, "(F)")
+    value = sensor.Measurement(17, 27, tempf, "imperial", round_to)
+    raw_distance = value.raw_distance(sample_wait=0.3)
+    print("Distance is: ", value.distance_imperial(raw_distance), "in imperial")
+    time.sleep(10)
